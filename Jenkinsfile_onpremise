@@ -8,8 +8,6 @@ pipeline {
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhubToken') 
-        REGION = "ap-northeast-2"
-        AWS_CREDENTIAL_NAME = 'awsTeam4'
         SSH_SERVER = 'k8s-master'  // Kubernetes 마스터에 연결하기 위한 SSH 서버 이름
         IMAGE = 'pinkcandy02/springproject'  // Docker 이미지 이름
         NAMESPACE = 'default'  // 배포할 Kubernetes 네임스페이스 (필요 시 변경)
