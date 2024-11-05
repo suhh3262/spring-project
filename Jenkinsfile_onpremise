@@ -8,7 +8,7 @@ pipeline {
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhubToken') 
-        SSH_SERVER = 'k8s-master'  // Kubernetes 마스터에 연결하기 위한 SSH 서버 이름
+        SSH_SERVER = 'team4-k8s-master'  // Kubernetes 마스터에 연결하기 위한 SSH 서버 이름
         IMAGE = 'pinkcandy02/springproject'  // Docker 이미지 이름
         NAMESPACE = 'default'  // 배포할 Kubernetes 네임스페이스 (필요 시 변경)
     }
@@ -71,7 +71,7 @@ pipeline {
                 sshPublisher(
                     publishers: [
                         sshPublisherDesc(
-                            configName: team4-k8s-master,  // Jenkins에서 설정한 SSH 서버 이름
+                            configName: 'SSH_SERVER',  // Jenkins에서 설정한 SSH 서버 이름
                             transfers: [
                                 sshTransfer(
                                     sourceFiles: '',  // 로컬 파일이 필요하지 않으므로 비워둠
