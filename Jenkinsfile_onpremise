@@ -20,7 +20,7 @@ pipeline {
             steps {
                 git branch: 'main',
                     credentialsId: 'git-token',
-                    url: 'https://github.com/design-view/springproject.git'
+                    url: 'https://github.com/suhh3262/spring-project.git'
             }
         }
 
