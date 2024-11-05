@@ -19,7 +19,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'gitToken',
+                    credentialsId: 'git-token',
                     url: 'https://github.com/design-view/springproject.git'
             }
         }
