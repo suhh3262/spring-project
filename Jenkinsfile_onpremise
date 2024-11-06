@@ -76,10 +76,11 @@ pipeline {
                         sh '''#!/bin/bash
                         # Kubeconfig 환경 변수 설정
                         export KUBECONFIG=${KUBECONFIG}  # Kubeconfig 파일 경로 설정
+                        kubectl get ns ${NAMESPACE} || kubectl create ns ${NAMESPACE}
 
                         # Kubernetes 배포 명령 실행
                         kubectl apply -f ${WORKSPACE}/deployment.yaml -n ${NAMESPACE}
-                        kubectl apply -f ${WORKSPACE}/service.yaml -n ${NAMESPACE}
+                        kubectl apply -f ${WORKSPACE}/knode-service.yaml -n ${NAMESPACE}
                         '''
                     }
                 }
