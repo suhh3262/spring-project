@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        jdk "jdk17"
-        gradle "Ga"
+        jdk "jdk17"         // JDK 17 사용
+        gradle "Ga"         // Gradle 사용
     }
     
     environment {
@@ -35,9 +35,10 @@ pipeline {
             steps {
                 echo 'Building Docker image'
                 dir("${env.WORKSPACE}") {
+                    // Docker 이미지 빌드
                     sh """
-                        docker build -t pinkcandy02/springproject:$BUILD_NUMBER .
-                        docker tag pinkcandy02/springproject:$BUILD_NUMBER pinkcandy02/springproject:latest
+                        docker build -t ${IMAGE}:${BUILD_NUMBER} .  // 빌드 번호를 사용해 태그 지정
+                        docker tag ${IMAGE}:${BUILD_NUMBER} ${IMAGE}:latest  // 'latest' 태그로도 태그
                     """
                 }
             }
@@ -53,7 +54,10 @@ pipeline {
         stage('Docker Image Push') {
             steps {
                 echo 'Pushing Docker image to DockerHub'
-                sh "docker push pinkcandy02/springproject:latest"
+                sh """
+                    docker push ${IMAGE}:${BUILD_NUMBER}   // 고유 버전 태그로 푸시
+                    docker push ${IMAGE}:latest            // 'latest' 태그로 푸시
+                """
             }
         }
 
@@ -61,8 +65,8 @@ pipeline {
             steps {
                 echo 'Cleaning up unused Docker images on Jenkins server'
                 sh """
-                    docker rmi pinkcandy02/springproject:$BUILD_NUMBER
-                    docker rmi pinkcandy02/springproject:latest
+                    docker rmi ${IMAGE}:${BUILD_NUMBER}  // 빌드된 이미지를 삭제
+                    docker rmi ${IMAGE}:latest            // 'latest' 이미지를 삭제
                 """
             }
         }
@@ -72,14 +76,14 @@ pipeline {
                 echo 'Deploying to Kubernetes Cluster'
                 withCredentials([file(credentialsId: 'kube-config-id', variable: 'KUBECONFIG')]) {
                     dir("${env.WORKSPACE}") {
-                        // Kubernetes 배포 파일을 workspace에 넣고 참조
+                        // Kubernetes 배포 명령 실행
                         sh '''#!/bin/bash
                         # Kubeconfig 환경 변수 설정
                         export KUBECONFIG=${KUBECONFIG}  # Kubeconfig 파일 경로 설정
                         kubectl get ns ${NAMESPACE} || kubectl create ns ${NAMESPACE}
 
-                        # Kubernetes 배포 명령 실행
-                        kubectl apply -f ${WORKSPACE}/deployment.yaml -n ${NAMESPACE}
+                        # Deployment 파일을 업데이트하면서, 새로운 Docker 이미지를 배포
+                        kubectl set image deployment/knode-deployment knode=${IMAGE}:${BUILD_NUMBER} -n ${NAMESPACE}
                         kubectl apply -f ${WORKSPACE}/knode-service.yaml -n ${NAMESPACE}
                         '''
                     }
