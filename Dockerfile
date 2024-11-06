@@ -1,6 +1,6 @@
 FROM openjdk:17-oracle
 # 애플리케이션을 빌드할 디렉토리 생성
-WORKDIR /opt/app
+WORKDIR mkdir /opt/app && cd $_
 
 # Gradle wrapper 및 소스 코드를 Docker 이미지로 복사
 COPY gradlew /opt/app/gradlew
