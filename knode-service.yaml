@@ -11,5 +11,5 @@ spec:
     - protocol: TCP
       port: 80   # 외부에서 접근할 포트
       targetPort: 8080  # 실제 Pod에서 열려 있는 포트
-      nodePort: 30001
+      nodePort: 30000
   type: NodePort # 클러스터 외부에서 접근할 수 있도록 설정
