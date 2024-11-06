@@ -69,11 +69,12 @@
             steps {
                 echo 'Deploying to Kubernetes Cluster'
                 withCredentials([file(credentialsId: 'kube-config-id', variable: 'KUBECONFIG')]) {
-                    dir("${env.WORKSPACE}"){
-                    sh '''
-                    export PATH=$PATH:/usr/bin
-                    kubectl apply -f /var/jenkins_home/workspace/spring-project/gradle/wrapper/*.jar -n spring-project
-                    '''
+                    dir("${env.WORKSPACE}") {
+                        // Kubernetes 배포 파일을 workspace에 넣고 참조
+                        sh '''
+                        export PATH=$PATH:/usr/bin
+                        kubectl apply -f ${env.WORKSPACE}/k8s/deployment.yaml -n ${NAMESPACE}
+                        kubectl apply -f ${env.WORKSPACE}/k8s/service.yaml -n ${NAMESPACE}
                     }
                 }
             }
