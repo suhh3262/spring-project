@@ -55,8 +55,7 @@ pipeline {
             steps {
                 echo 'Pushing Docker image to DockerHub'
                 sh """
-                    docker push ${IMAGE}:${BUILD_NUMBER}   // 고유 버전 태그로 푸시
-                    docker push ${IMAGE}:latest            // 'latest' 태그로 푸시
+                    docker push pinkcandy02/springproject:latest            // 'latest' 태그로 푸시
                 """
             }
         }
@@ -65,8 +64,8 @@ pipeline {
             steps {
                 echo 'Cleaning up unused Docker images on Jenkins server'
                 sh """
-                    docker rmi ${IMAGE}:${BUILD_NUMBER}  // 빌드된 이미지를 삭제
-                    docker rmi ${IMAGE}:latest            // 'latest' 이미지를 삭제
+                    docker rmi pinkcandy02/springproject:$BUILD_NUMBER
+                    docker rmi pinkcandy02/springproject:latest
                 """
             }
         }
@@ -83,7 +82,7 @@ pipeline {
                         kubectl get ns ${NAMESPACE} || kubectl create ns ${NAMESPACE}
 
                         # Deployment 파일을 업데이트하면서, 새로운 Docker 이미지를 배포
-                        kubectl set image deployment/knode-deployment knode=${IMAGE}:${BUILD_NUMBER} -n ${NAMESPACE}
+                        kubectl set image deployment/knode-deployment knode=pinkcandy02/springproject:latest:${BUILD_NUMBER} -n ${NAMESPACE}
                         kubectl apply -f ${WORKSPACE}/knode-service.yaml -n ${NAMESPACE}
                         '''
                     }
