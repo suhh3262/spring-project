@@ -71,7 +71,7 @@
                 withCredentials([file(credentialsId: 'kube-config-id', variable: 'KUBECONFIG')]) {
                     dir("${env.WORKSPACE}") {
                         // Kubernetes 배포 파일을 workspace에 넣고 참조
-                        sh '''
+                        sh '''#!/bin/bash
                         export PATH=$PATH:/usr/bin
                         kubectl apply -f ${env.WORKSPACE}/k8s/deployment.yaml -n ${NAMESPACE}
                         kubectl apply -f ${env.WORKSPACE}/k8s/service.yaml -n ${NAMESPACE}
