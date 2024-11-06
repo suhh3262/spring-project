@@ -37,8 +37,8 @@ pipeline {
                 dir("${env.WORKSPACE}") {
                     // Docker 이미지 빌드
                     sh """
-                        docker build -t ${IMAGE}:${BUILD_NUMBER} .  // 빌드 번호를 사용해 태그 지정
-                        docker tag ${IMAGE}:${BUILD_NUMBER} ${IMAGE}:latest  // 'latest' 태그로도 태그
+                        docker build -t pinkcandy02/springproject:$BUILD_NUMBER .
+                        docker tag pinkcandy02/springproject:$BUILD_NUMBER pinkcandy02/springproject:latest
                     """
                 }
             }
