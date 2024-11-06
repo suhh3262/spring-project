@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knode-deployment
+spec:
+  replicas: 3  # 관리할 Pod 수
+  selector:    # Pod의 선택 기준
+    matchLabels:
+      app: knode  # 이 레이블을 가진 Pod들을 관리
+  template:     # Pod 템플릿 정의
+    metadata:
+      labels:
+        app: knode  # spec.selector.matchLabels와 동일한 레이블
+    spec:
+      containers:
+        - name: knode
+          image: pinkcandy02/springproject:latest  # 사용할 컨테이너 이미지
+          ports:
+            - containerPort: 8080
+
+  strategy:
+    type: RollingUpdate #rollout: 변경사항이 있어 파드를 다시 올릴 때 레플리카셋에 있는 파드 순차적 업데이트
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
