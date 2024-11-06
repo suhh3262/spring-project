@@ -75,6 +75,7 @@
                         export PATH=$PATH:/usr/bin
                         kubectl apply -f ${env.WORKSPACE}/k8s/deployment.yaml -n ${NAMESPACE}
                         kubectl apply -f ${env.WORKSPACE}/k8s/service.yaml -n ${NAMESPACE}
+                        '''
                     }
                 }
             }
