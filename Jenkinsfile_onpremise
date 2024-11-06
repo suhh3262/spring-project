@@ -78,8 +78,8 @@ pipeline {
                         export KUBECONFIG=${KUBECONFIG}  # Kubeconfig 파일 경로 설정
 
                         # Kubernetes 배포 명령 실행
-                        kubectl apply -f ${WORKSPACE}/k8s/deployment.yaml -n ${NAMESPACE}
-                        kubectl apply -f ${WORKSPACE}/k8s/service.yaml -n ${NAMESPACE}
+                        kubectl apply -f ${WORKSPACE}/spring-project/deployment.yaml -n ${NAMESPACE}
+                        kubectl apply -f ${WORKSPACE}/spring-project/service.yaml -n ${NAMESPACE}
                         '''
                     }
                 }
