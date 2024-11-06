@@ -1,4 +1,4 @@
-pipeline {
+    pipeline {
     agent any
 
     tools {
@@ -9,7 +9,8 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhubToken') 
         IMAGE = 'pinkcandy02/springproject'  // Docker 이미지 이름
-        NAMESPACE = 'default'  // 배포할 Kubernetes 네임스페이스 (필요 시 변경)
+        NAMESPACE = 'spring-project'  // 배포할 Kubernetes 네임스페이스 (필요 시 변경)
+        KUBECONFIG_CREDENTIALS = credentials('kube-config-id')  // Kubeconfig 파일에 대한 Jenkins 자격 증명
     }
 
     stages {
@@ -66,24 +67,15 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                echo "Deploying to Kubernetes"
-                sshPublisher(
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: 'team4-k8s-master',  // Jenkins에서 설정한 SSH 서버 이름
-                            transfers: [
-                                sshTransfer(
-                                    sourceFiles: '',  // 로컬 파일이 필요하지 않으므로 비워둠
-                                    remoteDirectory: '',  // 원격 디렉토리 필요 없음
-                                    execCommand: """
-                                        kubectl set image deployment/knode-deployment knode=pinkcandy02/springproject:$BUILD_NUMBER --namespace=${NAMESPACE} && \
-                                        kubectl rollout status deployment/knode-deployment --namespace=${NAMESPACE}
-                                    """  // Deployment에 새 이미지를 적용하고 롤아웃 상태 확인
-                                )
-                            ]
-                        )
-                    ]
-                )
+                echo 'Deploying to Kubernetes Cluster'
+                withCredentials([file(credentialsId: 'kube-config-id', variable: 'KUBECONFIG')]) {
+                    dir("${env.WORKSPACE}"){
+                    sh '''
+                    export PATH=$PATH:/usr/bin
+                    kubectl apply -f /var/jenkins_home/workspace/spring-project/gradle/wrapper/*.jar -n spring-project
+                    '''
+                    }
+                }
             }
         }
     }
