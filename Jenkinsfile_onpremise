@@ -1,4 +1,4 @@
-    pipeline {
+pipeline {
     agent any
 
     tools {
@@ -7,15 +7,16 @@
     }
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhubToken') 
+        DOCKERHUB_CREDENTIALS = credentials('dockerhubToken')  // DockerHub 자격 증명
         IMAGE = 'pinkcandy02/springproject'  // Docker 이미지 이름
-        NAMESPACE = 'spring-project'  // 배포할 Kubernetes 네임스페이스 (필요 시 변경)
+        NAMESPACE = 'spring-project'  // 배포할 Kubernetes 네임스페이스
         KUBECONFIG_CREDENTIALS = credentials('kube-config-id')  // Kubeconfig 파일에 대한 Jenkins 자격 증명
     }
 
     stages {
         stage('Checkout') {
             steps {
+                echo 'Cloning repository from GitHub'
                 git branch: 'main',
                     credentialsId: 'git-token',
                     url: 'https://github.com/suhh3262/spring-project.git'
@@ -24,7 +25,7 @@
 
         stage('Gradle Build') {
             steps {
-                echo 'Gradle Build'
+                echo 'Building the project using Gradle'
                 sh 'chmod +x ./gradlew'  // 실행 권한 부여
                 sh './gradlew build -x test'  // 테스트를 제외하고 빌드
             }
@@ -32,7 +33,7 @@
 
         stage('Docker Image Build') {
             steps {
-                echo 'Docker Image Build'
+                echo 'Building Docker image'
                 dir("${env.WORKSPACE}") {
                     sh """
                         docker build -t pinkcandy02/springproject:$BUILD_NUMBER .
@@ -44,18 +45,19 @@
 
         stage('Docker Login') {
             steps {
+                echo 'Logging into DockerHub'
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
 
         stage('Docker Image Push') {
             steps {
-                echo 'Docker Image Push'
+                echo 'Pushing Docker image to DockerHub'
                 sh "docker push pinkcandy02/springproject:latest"
             }
         }
 
-        stage('Cleaning up') {
+        stage('Cleaning up Docker images') {
             steps {
                 echo 'Cleaning up unused Docker images on Jenkins server'
                 sh """
@@ -72,9 +74,12 @@
                     dir("${env.WORKSPACE}") {
                         // Kubernetes 배포 파일을 workspace에 넣고 참조
                         sh '''#!/bin/bash
-                        export PATH=$PATH:/usr/bin
-                        kubectl apply -f ${env.WORKSPACE}/k8s/deployment.yaml -n ${NAMESPACE}
-                        kubectl apply -f ${env.WORKSPACE}/k8s/service.yaml -n ${NAMESPACE}
+                        # Kubeconfig 환경 변수 설정
+                        export KUBECONFIG=${KUBECONFIG}  # Kubeconfig 파일 경로 설정
+
+                        # Kubernetes 배포 명령 실행
+                        kubectl apply -f ${WORKSPACE}/k8s/deployment.yaml -n ${NAMESPACE}
+                        kubectl apply -f ${WORKSPACE}/k8s/service.yaml -n ${NAMESPACE}
                         '''
                     }
                 }
