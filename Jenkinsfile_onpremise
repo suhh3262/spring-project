@@ -54,9 +54,7 @@ pipeline {
         stage('Docker Image Push') {
             steps {
                 echo 'Pushing Docker image to DockerHub'
-                sh """
-                    docker push pinkcandy02/springproject:latest            // 'latest' 태그로 푸시
-                """
+                sh "docker push pinkcandy02/springproject:latest"
             }
         }
 
