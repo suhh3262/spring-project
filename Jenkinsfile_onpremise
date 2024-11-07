@@ -81,7 +81,7 @@ pipeline {
 
                         # Deployment 파일을 업데이트하면서, 새로운 Docker 이미지를 배포
                         kubectl set image deployment/knode-deployment knode=pinkcandy02/springproject:latest:${BUILD_NUMBER} -n ${NAMESPACE}
-                        kubectl apply -f ${WORKSPACE}/knode-service.yaml -n ${NAMESPACE}
+                        kubectl apply -f ${WORKSPACE}/service.yaml -n ${NAMESPACE}
                         '''
                     }
                 }
