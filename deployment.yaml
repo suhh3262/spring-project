@@ -17,6 +17,15 @@ spec:
           image: pinkcandy02/springproject:latest  # 사용할 컨테이너 이미지
           ports:
             - containerPort: 8081
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
+
 
   strategy:
     type: RollingUpdate #rollout: 변경사항이 있어 파드를 다시 올릴 때 레플리카셋에 있는 파드 순차적 업데이트
