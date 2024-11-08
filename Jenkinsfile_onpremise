@@ -99,12 +99,7 @@ pipeline {
                         # 새로운 Docker 이미지를 배포
                         kubectl set image deployment/knode-deployment knode=pinkcandy02/springproject:latest:${BUILD_NUMBER} -n ${NAMESPACE}
 
-                        # 서비스 파일을 Kubernetes에 적용
-                        ssh -i ~/.ssh/authorized_keys master@${KUBE_MASTER_IP} "
-                            kubectl apply -f ${WORKSPACE}/deployment.yaml -n ${NAMESPACE}
-                            kubectl apply -f ${WORKSPACE}/service.yaml -n ${NAMESPACE}
-                            "
-                        '''
+
                     }
                 }
             }
