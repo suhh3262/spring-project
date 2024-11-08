@@ -1,14 +1,46 @@
+metadata:
+  name: knode
+  namespace: spring-project
+  labels:
+    app: knode
+spec:
+  replicas: 9  # 총 9개의 Pod 생성 (각 노드에 3개씩)
+  selector:
+    matchLabels:
+      app: knode
+  template:
+    metadata:
+      labels:
+        app: knode
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - team4-k8s-node01
+                      - team4-k8s-node02
+                      - team4-k8s-node03
+      containers:
+      - name: spring-project
+        image: pinkcandy02/springproject:latest
+        ports:
+        - containerPort: 8081
+
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: knode-service
-  labels:
-    ap: knode
+  name: spring-project-service
+  namespace: spring-project
 spec:
   selector:
-    app: knode  # 해당 label을 가진 Pod들을 선택
+    app: knode
   ports:
     - protocol: TCP
-      port: 80         # 외부에서 접근할 포트
-      targetPort: 8081   # 실제 Pod에서 열려 있는 포트
-  type: LoadBalancer   # MetalLB에서 외부 IP를 할당해 로드밸런서 역할을 하도록 설정
+      port: 80
+      targetPort: 8081
+  type: LoadBalancer  # 클러스터 내부에서만 접근 가능
