@@ -102,17 +102,11 @@ pipeline {
                         kubectl apply -f ${WORKSPACE}/service.yaml -n ${NAMESPACE}
                         '''
                     }
-            }
-    }
-}
-
-
-                    }
                 }
             }
         }
     }
-    
+
     post {
         success {
             echo "Deployment to Kubernetes was successful!"
