@@ -11,6 +11,7 @@ pipeline {
         IMAGE = 'pinkcandy02/springproject'  // Docker 이미지 이름
         NAMESPACE = 'spring-project'  // 배포할 Kubernetes 네임스페이스
         KUBECONFIG_CREDENTIALS = credentials('kube-config-id')  // Kubeconfig 파일에 대한 Jenkins 자격 증명
+        KUBE-MASTER-IP = 10.100.202.122
     }
 
     stages {
@@ -99,8 +100,10 @@ pipeline {
                         kubectl set image deployment/knode-deployment knode=pinkcandy02/springproject:latest:${BUILD_NUMBER} -n ${NAMESPACE}
 
                         # 서비스 파일을 Kubernetes에 적용
-                        kubectl apply -f ${WORKSPACE}/deployment.yaml -n ${NAMESPACE}
-                        kubectl apply -f ${WORKSPACE}/service.yaml -n ${NAMESPACE}
+                        ssh -i /path/to/private/key user@${KUBE_MASTER_IP} "
+                            kubectl apply -f ${WORKSPACE}/deployment.yaml -n ${NAMESPACE}
+                            kubectl apply -f ${WORKSPACE}/service.yaml -n ${NAMESPACE}
+                            "
                         '''
                     }
                 }
