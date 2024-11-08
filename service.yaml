@@ -1,5 +1,7 @@
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: knode
+  name: spring-project
   namespace: spring-project
   labels:
     app: knode
@@ -38,9 +40,9 @@ metadata:
   namespace: spring-project
 spec:
   selector:
-    app: knode
+    app: knode  # 해당 레이블을 가진 Pod들을 선택
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8081
-  type: LoadBalancer  # 클러스터 내부에서만 접근 가능
+      port: 80        # 외부에서 접근할 포트
+      targetPort: 8081  # 실제 Pod에서 열려 있는 포트
+  type: LoadBalancer  # MetalLB에서 외부 IP를 할당해 로드밸런서 역할을 하도록 설정
