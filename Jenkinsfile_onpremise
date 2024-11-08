@@ -11,7 +11,7 @@ pipeline {
         IMAGE = 'pinkcandy02/springproject'  // Docker 이미지 이름
         NAMESPACE = 'spring-project'  // 배포할 Kubernetes 네임스페이스
         KUBECONFIG_CREDENTIALS = credentials('kube-config-id')  // Kubeconfig 파일에 대한 Jenkins 자격 증명
-        KUBE_MASTER_IP = 10.100.202.122
+        KUBE_MASTER_IP = "10.100.202.122"
     }
 
     stages {
