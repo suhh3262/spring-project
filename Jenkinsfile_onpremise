@@ -11,7 +11,7 @@ pipeline {
         IMAGE = 'pinkcandy02/springproject'  // Docker 이미지 이름
         NAMESPACE = 'spring-project'  // 배포할 Kubernetes 네임스페이스
         KUBECONFIG_CREDENTIALS = credentials('kube-config-id')  // Kubeconfig 파일에 대한 Jenkins 자격 증명
-        KUBE-MASTER-IP = 10.100.202.122
+        KUBE_MASTER_IP = 10.100.202.122
     }
 
     stages {
@@ -76,18 +76,7 @@ pipeline {
                 // Kubernetes Kubeconfig 설정을 위한 환경 변수 설정
                 withCredentials([file(credentialsId: 'kube-config-id', variable: 'KUBECONFIG')]) {
                     dir("${env.WORKSPACE}") {
-                
-                        // SCP를 통해 Docker 컨테이너에서 Kubernetes 마스터로 파일 전송
-                        script {
-                            sh '''#!/bin/bash
-                            echo "Transferring deployment.yaml and service.yaml to Kubernetes master..."
-                    
-                            # Docker 컨테이너에서 Kubernetes 마스터로 파일 전송
-                            scp -i ~/.ssh/id_rsa root@68a52037e94c:/var/jenkins_home/workspace/spring-project/deployment.yaml master@10.100.202.122:/home/master/source
-                            scp -i ~/.ssh/id_rsa root@68a52037e94c:/var/jenkins_home/workspace/spring-project/service.yaml master@10.100.202.122:/home/master/source
-                            '''
-                        }
-
+            
                         // Kubernetes 명령어 실행
                         sh '''#!/bin/bash
                         # Kubeconfig 환경 변수 설정
