@@ -12,18 +12,6 @@ spec:
       labels:
         app: knode  # spec.selector.matchLabels와 동일한 레이블
     spec:
-
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - team4-k8s-node01
-                      - team4-k8s-node02
-                      - team4-k8s-node03
       containers:
         - name: knode
           image: pinkcandy02/springproject:latest  # 사용할 컨테이너 이미지
