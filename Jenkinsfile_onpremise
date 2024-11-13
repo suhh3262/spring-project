@@ -86,7 +86,8 @@ pipeline {
                         kubectl get ns ${NAMESPACE} || kubectl create ns ${NAMESPACE}
 
                         # 새로운 Docker 이미지를 배포
-                        kubectl set image deployment/knode-deployment knode=pinkcandy02/springproject:latest:${BUILD_NUMBER} -n ${NAMESPACE}
+                        kubectl set image deployment/knode-deployment knode=pinkcandy02/springproject:latest:${BUILD_NUMBER} -n spring-project
+
                         '''
                     }
                 }
