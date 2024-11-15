@@ -87,6 +87,7 @@ pipeline {
 
                         # 새로운 Docker 이미지를 배포
                         kubectl set image deployment/knode-deployment knode=pinkcandy02/springproject:latest:${BUILD_NUMBER} -n spring-project
+                        kubectl rollout restart deployment/knode-deployment -n spring-project
 
                         '''
                     }
