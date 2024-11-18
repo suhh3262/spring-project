@@ -8,7 +8,7 @@
                 <div class="col-md-4 margin">
                     <a th:href="@{'/item/'+${dto.id}}">
                     <div class="card">
-                        <img th:src="@{${dto.imgUrl}}" height="400">
+                        <img th:src="@{'https://spring-carimg-bucket.s3.ap-northeast-2.amazonaws.com/'+${dto.oriImgName}}" height="400">
                         <div class="card-body">
                             <h4 class="card-title">[[${dto.itemNm}]]</h4>
                             <p class="card-text">[[${dto.price}]]원</p>
