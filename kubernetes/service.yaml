@@ -1,1 +1,12 @@
-a
+apiVersion: v1
+kind: Service
+metadata:
+  name: knode-service
+spec:
+  selector:
+    app: knode  # 해당 label을 가진 Pod들을 선택
+  ports:
+    - protocol: TCP
+      port: 80         # 외부에서 접근할 포트
+      targetPort: 8081    # 실제 Pod에서 열려 있는 포트
+  type: LoadBalancer   # 외부 로드밸런서를 사용하도록 설정
